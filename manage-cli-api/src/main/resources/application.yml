@@ -1,0 +1,14 @@
+server:
+  port: 80
+
+spring:
+  profiles:
+    active: dao
+  datasource:
+    url: jdbc:mysql://192.168.47.201:3306/manage_cli?useUnicode=true&useSSL=false&characterEncoding=utf8
+    username: root
+    password: 123456
+  redis:
+    host: 192.168.47.201
+    port: 6379
+    password: 123456

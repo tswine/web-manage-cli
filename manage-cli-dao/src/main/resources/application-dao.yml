@@ -1,0 +1,10 @@
+mybatis:
+  mapperLocations: classpath*:mapper/*.xml
+  configurationMapUnderscoreToCamelCase: true
+  configuraUseColumnLabel: true
+
+spring:
+  profiles: dao
+logging:
+  level:
+    com.tswine.manage.dao: debug

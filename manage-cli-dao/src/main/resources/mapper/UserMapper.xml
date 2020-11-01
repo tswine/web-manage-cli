@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tswine.manage.dao.UserMapper">
+    <resultMap id="BaseResultMap" type="com.tswine.manage.domain.entity.User">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="pass_word" property="passWord"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="sex" property="sex"/>
+        <result column="salt" property="salt"/>
+        <result column="birthday" property="birthday"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!--所有查询列-->
+    <sql id="COLUMNS">
+        id,user_name,pass_word,name,phone,email,sex,salt,birthday,status,created
+    </sql>
+
+    <!--根据主键获取实体对象-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        SELECT
+        <include refid="COLUMNS"/>
+        FROM user
+        WHERE id = #{id} AND yn = 1
+    </select>
+    <select id="selectByUserName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="COLUMNS"/>
+        FROM user WHERE user_name = #{userName}
+    </select>
+    <select id="selectByQuery" resultMap="BaseResultMap">
+        SELECT
+        <include refid="COLUMNS"/>
+        FROM user
+        <where>
+            <if test="userName != null and userName != ''">
+                AND user_name LIKE '%${userName}%'
+            </if>
+            <if test="name != null and name != ''">
+                AND name LIKE '%${name}%'
+            </if>
+            <if test="phone != null and phone != ''">
+                AND phone = #{phone}
+            </if>
+            <if test="sexList != null and sexList.size > 0">
+                AND sex IN
+                <foreach collection="sexList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="startDay != null and startDay != ''">
+                AND birthday >= #{startDay}
+            </if>
+            <if test="endDay != null and endDay != ''">
+                AND birthday &lt;= #{endDay}
+            </if>
+            <if test="true">
+                AND yn = 1
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <!--通过主键删除数据-->
+    <update id="deleteByPrimaryKey">
+        UPDATE user SET yn = -1 WHERE id = #{id}
+    </update>
+    <update id="updateStatus">
+        UPDATE user SET status = #{status} WHERE id = #{id} AND yn = 1
+    </update>
+    <update id="update">
+        UPDATE user SET
+            user_name = #{userName},
+            name = #{name},
+            phone = #{phone},
+            email = #{email},
+            sex = #{sex},
+            birthday = #{birthday},
+            status = #{status}
+        WHERE id = #{id}  AND yn = 1
+    </update>
+    <update id="updatePassWord">
+        UPDATE user SET
+            pass_word = #{passWord},
+            salt = #{salt}
+        WHERE id = #{id}  AND yn = 1
+    </update>
+
+    <!--插入实体对象-->
+    <insert id="insert" parameterType="com.tswine.manage.domain.entity.User">
+        INSERT INTO user(user_name,pass_word,name,phone,email,sex,birthday,salt)
+        VALUES (#{userName},#{passWord},#{name},#{phone},#{email},#{sex},#{birthday},#{salt})
+    </insert>
+
+</mapper>
